@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maquina Von Neumann</title>
+
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+    <div id="main">
+        <div id="metade1">
+            <div id="container1">
+                <table id="memoria"></table>
+            </div>
+        </div>
+
+        <div id="metade2">
+            <div id="container2">
+                <textarea name="codigo maquina" id="codigomaquina" class="areatexto" spellcheck="false"></textarea>
+                <textarea name="codigo hexa" id="codigohexa" readonly="true" class="areatexto"
+                    spellcheck="false"></textarea>
+            </div>
+
+            <div id="container3">
+                <input type="button" value="Converter" id="conversor" onclick="javascript:converter()"
+                    class="inputbutton">
+                <input type="button" value="Enviar Codigo" id="enviar" onclick="javascript:escreverMemoria()"
+                    class="inputbutton">
+            </div>
+
+            <div id="container4">
+                <label for="ponteiro" id="labelponteiro">Endereço de início do programa &nbsp&nbsp</label>
+                <input type="text" value="0" id="ponteiro">
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>
