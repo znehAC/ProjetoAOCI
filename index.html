@@ -11,13 +11,53 @@
 
 <body>
     <div id="main">
+        
         <div id="metade1">
+            <div id="container0">
+                <div id="processador">
+                    <div id="unidadecontrole">
+                        <div>
+                            <label for="pc" class="uc">PC</label>
+                            <input type="text" id="pc" value="00000000" class="uc">
+                        </div>
+                        <div>
+                            <label for="ir" class="uc">IR</label>
+                            <input type="text" id="ir" value="00" class="uc">
+                        </div>
+                        <div>
+                            <label for="mar" class="uc">MAR</label>
+                            <input type="text" id="mar" value="00000000" class="uc">
+                        </div>
+                    </div>
+
+                    <div id="unidadelogica">
+                        <div>
+                            <label for="acc" class="ul">ACC</label>
+                            <input type="text" id="acc" value="00000000" class="uc">
+                        </div>
+                        <div>
+                            <label for="mbr" class="ul">MBR</label>
+                            <input type="text" id="mbr" value="00000000" class="uc">
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="divnext">
+                    <input type="button" value="Próxima instrução", id="next" onclick="javascript:executarCiclo()" class="inputbutton">
+                </div>
+
+            </div>
+
             <div id="container1">
                 <table id="memoria"></table>
             </div>
         </div>
 
         <div id="metade2">
+            <div id="instrucao">
+                
+            </div>
             <div id="container2">
                 <textarea name="codigo maquina" id="codigomaquina" class="areatexto" spellcheck="false"></textarea>
                 <textarea name="codigo hexa" id="codigohexa" readonly="true" class="areatexto"
@@ -27,7 +67,7 @@
             <div id="container3">
                 <input type="button" value="Converter" id="conversor" onclick="javascript:converter()"
                     class="inputbutton">
-                <input type="button" value="Enviar Codigo" id="enviar" onclick="javascript:escreverMemoria()"
+                <input type="button" value="Enviar Codigo" id="enviar" onclick="javascript:carregarMemoria()"
                     class="inputbutton">
             </div>
 

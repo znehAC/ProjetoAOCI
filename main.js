@@ -1,9 +1,14 @@
-var pc = 0;
+var pc = 0x00000000;
+var ir = 0x00;
+var mar = 0x00000000;
+var mbr = 0x00000000;
+var acc = 0x00000000;
 var memoria = [];
 
 
 let table = document.querySelector("table");
 criarTabela(table);
+lerMemoria()
 
 function criarTabela(table){
     var i = 3, j =4;
@@ -40,30 +45,64 @@ function lerMemoria(){
     return vetor;
 }
 
-function escreverMemoria(){
+function atualizarMemoria(){
+    for(let i =0; i < 10; i++){
+        for (let j = 0; j < 10; j++) {
+            let temp = memoria[j+(i*10)];
+            let palavra = formatarHexa(temp.toString(16));
+            document.getElementById(`casa${j+(i*10)}`).value = palavra;
+        }
+    }
+}
+
+function carregarMemoria(){
     var codigo = document.getElementById("codigohexa").value;
     var linhas = codigo.split("\n");
     pc = parseInt(document.getElementById("ponteiro").value, 16);
     let contador = pc;
     linhas.forEach(linha => {
         if(linha != ""){
-            let input = document.getElementById(`casa${contador}`);
-            input.value = linha;
+            memoria[contador] = parseInt(linha, 16)
             contador++;
         }
     });
-    lerMemoria();
+    pc = parseInt(document.getElementById("ponteiro").value, 16);
+    atualizarProcessador();
+    atualizarMemoria();
 }
 
+function lerProcessador(){
+    let temp = document.getElementById("pc").value;
+    pc = parseInt(temp, 16);
+    temp = document.getElementById("ir").value;
+    ir = parseInt(temp, 16);
+    temp = document.getElementById("acc").value;
+    acc = parseInt(temp, 16);
+    temp = document.getElementById("mar").value;
+    mar = parseInt(temp, 16);
+    temp = document.getElementById("mbr").value;
+    mbr = parseInt(temp, 16);
 
-
-function teste() {
-    let texto = document.getElementById("maquina").value;
-    document.getElementById("hexa").value = "codigo\nmuito\nfoda";
 }
 
-function subircodigo() {
-    return null;
+function atualizarProcessador(){
+    let temp = formatarHexa(pc.toString(16));
+    document.getElementById("pc").value = temp;
+    temp = formatarHexa(ir.toString(16))
+    document.getElementById("ir").value = temp;
+    temp = formatarHexa(acc.toString(16))
+    document.getElementById("acc").value = temp;
+    temp = formatarHexa(mar.toString(16))
+    document.getElementById("mar").value = temp;
+    temp = formatarHexa(mbr.toString(16))
+    document.getElementById("mbr").value = temp;
+}
+
+function formatarHexa(palavra){
+    while(palavra.length < 8){
+        palavra = "0" + palavra;
+    }
+    return palavra.toUpperCase();
 }
 
 function converter(){
@@ -81,14 +120,33 @@ function converter(){
              }
             opcode = opCodeToHexa(opcode);
             let palavra = (opcode + immediate).toString(16);
-            while(palavra.length < 8){
-                palavra = "0" + palavra;
-            }
+            palavra = formatarHexa(palavra);
             linhasHexa += palavra + "\n";
         }
     });
     document.getElementById("codigohexa").value = linhasHexa.toUpperCase();
 }
+
+function executarCiclo(){
+    lerProcessador();
+
+    buscar()
+    decodificar()
+    executar()
+
+    pc++;
+    atualizarProcessador();
+    atualizarMemoria()
+    console.log();
+}
+
+function buscar(){}
+function decodificar(){}
+function executar(){}
+
+
+
+
 
 
 function opCodeToHexa(opcode) {
@@ -133,5 +191,5 @@ function opCodeToHexa(opcode) {
         retorno = 0x12000000;
 
     return retorno;
-
 }
+

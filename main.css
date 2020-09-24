@@ -1,21 +1,74 @@
 html{
     background-color: rgb(231, 227, 227);
-    height: 100%;
 }
 
 #main{
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
-    height: auto;
+}
+
+#container0{
+    margin: 0 left;
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    padding: 2px;
+    position: relative;
+    top: 80px;
+    left: 80px;
+    justify-content: space-between;
+}
+
+#divnext{
+    position: relative;
+    top: 10px;
 }
 
 #metade1, #metade2{
     background-color: rgb(231, 227, 227);
-    padding: 0px;
+    /* padding: 0px; */
     width: 100%;
-    margin: 0 auto;
-    height: 50%;
+    position: relative;
+}
+
+#processador{
+    display: flex;
+    flex-direction: column;
+}
+#unidadecontrole, #unidadelogica{
+    display: flex;
+    flex-direction: row;
+}
+
+.uc, .ul{
+    display: block;
+    width: 61px;
+    margin: 3px;
+}
+
+input.uc, input.ul{
+    border: 2px solid black;
+    height: auto;
+    font-size: small;
+    margin: 2px; 
+    width: 70px;
+    background: lightgray; 
+    border: 2px solid black; 
+}
+
+#metade2{
+    top: 78px;
+}
+
+
+#metade1{
+    top: 15px;
+}
+
+#instrucao{
+    display: grid;
+    justify-content: space-around;
+    position: absolute;
 }
 #container1{
     width: 50%;
@@ -28,12 +81,13 @@ html{
     display: flex;
     flex-direction: row;
     margin: 0 auto;
+
     padding: 5px;
     justify-content: space-between;
 }
 
 #memoria{
-    margin: 0 auto;
+    margin: 0 auto; 
     padding: 2px;
     width: 50%;
     border-radius: 5px;
@@ -61,8 +115,7 @@ html{
     font-size: x-large;
 }
 
-
-.inputbutton:hover {
+.inputbutton:hover, .casa:hover, input.uc:hover, #ponteiro:hover {
     background-color:#111111;
     color: white;
 }
@@ -72,10 +125,7 @@ html{
     color: white;
 }
 
-
-
 .celula{
-    margin: 0 auto;
     width: 63px; 
 }
 
@@ -83,7 +133,7 @@ html{
     height: 100%;
     font-size: medium;
     margin: 2px auto; 
-    width: 70px;
+    width: 72px;
     background: lightgray; 
     border: 0px solid black; 
     /* border-radius: 2px; */
@@ -97,6 +147,13 @@ html{
     border-radius: 5px;
     border: 2px solid black;
     background-color: lightgray;
+}
+
+#next{
+    font-size: medium;
+    position: absolute;
+    height: auto;
+    top: 10px;
 }
 
 .areatexto{
