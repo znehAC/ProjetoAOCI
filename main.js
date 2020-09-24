@@ -128,16 +128,16 @@ function converter(){
 }
 
 function executarCiclo(){
-    lerProcessador();
+    lerProcessador()
 
     buscar()
     decodificar()
     executar()
 
-    pc++;
-    atualizarProcessador();
+    pc++
+    atualizarProcessador()
     atualizarMemoria()
-    console.log();
+    console.log(pc)
 }
 
 function buscar(){}
