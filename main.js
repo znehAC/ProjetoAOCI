@@ -33,6 +33,14 @@ function criarTabela(table){
     }
 }
 
+function zerarProcessador(){
+    pc = 0x00000000;
+    ir = 0x00;
+    mar = 0x00000000;
+    mbr = 0x00000000;
+    acc = 0x00000000;
+}
+
 function lerMemoria(){
     let temp = [];
     for(let i = 0; i < 10; i++){
@@ -56,6 +64,8 @@ function atualizarMemoria(){
 }
 
 function carregarMemoria(){
+    lerMemoria()
+    zerarProcessador()
     var codigo = document.getElementById("codigohexa").value;
     var linhas = codigo.split("\n");
     pc = parseInt(document.getElementById("ponteiro").value, 16);
@@ -138,7 +148,6 @@ function executarCiclo(){
     pc++
     atualizarProcessador()
     atualizarMemoria()
-    console.log(pc)
 }
 
 function buscar(endereco){
@@ -150,9 +159,7 @@ function decodificar(){
     let mascara = 0x00FFFFFF
 
     ir = palavra>>24
-    console.log(palavra.toString(16))
     mar = palavra&mascara
-    console.log(mar.toString(16))
 
 }
 
@@ -185,29 +192,53 @@ opCodeToHexa = {
 }
 
 comando = {
-    0x00: function(){
-        return
-    },
-    0x01: function(){
-        
-    },
-    0x02: function(){},
-    0x03: function(){},
-    0x04: function(){},
-    0x05: function(){},
-    0x06: function(){},
-    0x07: function(){},
-    0x08: function(){},
-    0x09: function(){},
-    0x0A: function(){},
-    0x0B: function(){},
-    0x0C: function(){},
-    0x0D: function(){},
-    0x0E: function(){},
-    0x0F: function(){},
-    0x10: function(){},
-    0x11: function(){},
-    0x12: function(){}
+    0x00: function(){       //hlt
+        zerarProcessador() 
+        pc = -1
+    },  
+    0x01: function(){       //ld
+        buscar(mar) 
+        acc = mbr
+    },  
+    0x02: function(){       //st
+        mbr = acc   
+        memoria[mar] = mbr    
+    },  
+    0x03: function(){       //add
+        buscar(mar) 
+        acc = acc + mbr     
+    },  
+    0x04: function(){       //sub
+        buscar(mar) 
+        acc = acc - mbr     
+    },  
+    0x05: function(){       //mul
+        buscar(mar) 
+        acc = acc * mbr
+    },     
+    0x06: function(){       //div
+        buscar(mar) 
+        acc = acc / mbr
+    },     
+    0x07: function(){       //lsh
+        acc = acc<<1    
+    },     
+    0x08: function(){       //rsh
+        acc = acc>>1
+    },     
+    0x09: function(){},     //cmp
+    0x0A: function(){},     //je
+    0x0B: function(){},     //jne
+    0x0C: function(){},     //jl
+    0x0D: function(){},     //jle
+    0x0E: function(){},     //jg
+    0x0F: function(){},     //jge
+    0x10: function(){},     //acch
+    0x11: function(){},     //accl
+    0x12: function(){       //jmp
+        buscar(mar)
+        pc = mbr
+    }      
 }
 
 
