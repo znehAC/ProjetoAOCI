@@ -3,6 +3,9 @@ var ir = 0x00;
 var mar = 0x00000000;
 var mbr = 0x00000000;
 var acc = 0x00000000;
+var e = 0
+var l = 0
+var g = 0
 var memoria = [];
 
 
@@ -39,6 +42,9 @@ function zerarProcessador(){
     mar = 0x00000000;
     mbr = 0x00000000;
     acc = 0x00000000;
+    e = 0
+    l = 0
+    g = 0
 }
 
 function lerMemoria(){
@@ -92,6 +98,12 @@ function lerProcessador(){
     mar = parseInt(temp, 16);
     temp = document.getElementById("mbr").value;
     mbr = parseInt(temp, 16);
+    temp = document.getElementById("e").value;
+    mbr = parseInt(temp, 16);
+    temp = document.getElementById("l").value;
+    mbr = parseInt(temp, 16);
+    temp = document.getElementById("g").value;
+    mbr = parseInt(temp, 16);
 
 }
 
@@ -106,6 +118,12 @@ function atualizarProcessador(){
     document.getElementById("mar").value = temp;
     temp = formatarHexa(mbr.toString(16), 8)
     document.getElementById("mbr").value = temp;
+    temp = formatarHexa(e.toString(16), 1)
+    document.getElementById("e").value = temp;
+    temp = formatarHexa(l.toString(16), 1)
+    document.getElementById("l").value = temp;
+    temp = formatarHexa(g.toString(16), 1)
+    document.getElementById("g").value = temp;
 }
 
 function formatarHexa(palavra, tamanho){
@@ -142,10 +160,10 @@ function executarCiclo(){
     lerMemoria()
 
     buscar(pc)
+    pc++
     decodificar()
     executar()
-
-    pc++
+    
     atualizarProcessador()
     atualizarMemoria()
 }
@@ -193,8 +211,7 @@ opCodeToHexa = {
 
 comando = {
     0x00: function(){       //hlt
-        zerarProcessador() 
-        pc = -1
+        return
     },  
     0x01: function(){       //ld
         buscar(mar) 
@@ -226,19 +243,46 @@ comando = {
     0x08: function(){       //rsh
         acc = acc>>1
     },     
-    0x09: function(){},     //cmp
-    0x0A: function(){},     //je
-    0x0B: function(){},     //jne
-    0x0C: function(){},     //jl
-    0x0D: function(){},     //jle
-    0x0E: function(){},     //jg
-    0x0F: function(){},     //jge
+    0x09: function(){       //cmp
+        buscar(mar)
+        if(acc == mbr) e = 1
+        else e = 0
+        if(acc < mbr) l = 1
+        else l = 0    
+        if(acc > mbr) g = 1
+        else g = 0
+
+    },     
+    0x0A: function(){       //je
+        if(e == 1)
+            pc = mar
+    },     
+    0x0B: function(){       //jne
+        if( e == 0)
+            pc = mar
+    },     
+    0x0C: function(){       //jl
+        if(l == 1)
+            pc = mar
+    },
+    0x0D: function(){       //jle
+        if(e == 1 || l == 1)
+            pc = mar
+    },
+    0x0E: function(){       //jg
+        if(g == 1)
+            pc = mar
+    },
+    0x0F: function(){       //jge
+        if(e == 1 || g == 1)
+            pc = mar
+    },
     0x10: function(){},     //acch
     0x11: function(){},     //accl
     0x12: function(){       //jmp
         buscar(mar)
         pc = mbr
-    }      
+    }     
 }
 
 
