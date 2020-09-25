@@ -34,22 +34,22 @@ function criarTabela(table){
 }
 
 function lerMemoria(){
-    var vetor = [];
+    let temp = [];
     for(let i = 0; i < 10; i++){
         for(let j = 0; j < 10; j++){
             let elemento = document.getElementById(`casa${j+(i*10)}`).value;
-            vetor[j+(i*10)] = parseInt(elemento, 16);
+            temp[j+(i*10)] = parseInt(elemento, 16);
         }
     }
-    memoria = vetor;
-    return vetor;
+    memoria = temp;
+    return temp;
 }
 
 function atualizarMemoria(){
     for(let i =0; i < 10; i++){
         for (let j = 0; j < 10; j++) {
             let temp = memoria[j+(i*10)];
-            let palavra = formatarHexa(temp.toString(16));
+            let palavra = formatarHexa(temp.toString(16), 8);
             document.getElementById(`casa${j+(i*10)}`).value = palavra;
         }
     }
@@ -86,20 +86,20 @@ function lerProcessador(){
 }
 
 function atualizarProcessador(){
-    let temp = formatarHexa(pc.toString(16));
+    let temp = formatarHexa(pc.toString(16), 8);
     document.getElementById("pc").value = temp;
-    temp = formatarHexa(ir.toString(16))
+    temp = formatarHexa(ir.toString(16), 2)
     document.getElementById("ir").value = temp;
-    temp = formatarHexa(acc.toString(16))
+    temp = formatarHexa(acc.toString(16), 8)
     document.getElementById("acc").value = temp;
-    temp = formatarHexa(mar.toString(16))
+    temp = formatarHexa(mar.toString(16), 8)
     document.getElementById("mar").value = temp;
-    temp = formatarHexa(mbr.toString(16))
+    temp = formatarHexa(mbr.toString(16), 8)
     document.getElementById("mbr").value = temp;
 }
 
-function formatarHexa(palavra){
-    while(palavra.length < 8){
+function formatarHexa(palavra, tamanho){
+    while(palavra.length < tamanho){
         palavra = "0" + palavra;
     }
     return palavra.toUpperCase();
@@ -118,9 +118,9 @@ function converter(){
              }else{
                 immediate = 0x00;
              }
-            opcode = opCodeToHexa(opcode);
+            opcode = opCodeToHexa[opcode]
             let palavra = (opcode + immediate).toString(16);
-            palavra = formatarHexa(palavra);
+            palavra = formatarHexa(palavra, 8);
             linhasHexa += palavra + "\n";
         }
     });
@@ -129,8 +129,9 @@ function converter(){
 
 function executarCiclo(){
     lerProcessador()
+    lerMemoria()
 
-    buscar()
+    buscar(pc)
     decodificar()
     executar()
 
@@ -140,12 +141,74 @@ function executarCiclo(){
     console.log(pc)
 }
 
-function buscar(){}
-function decodificar(){}
-function executar(){}
+function buscar(endereco){
+    mbr = memoria[endereco]
+}
+
+function decodificar(){
+    let palavra = mbr
+    let mascara = 0x00FFFFFF
+
+    ir = palavra>>24
+    console.log(palavra.toString(16))
+    mar = palavra&mascara
+    console.log(mar.toString(16))
+
+}
+
+function executar(){
+    comando[ir]()
+}
 
 
 
+opCodeToHexa = {
+    hlt: 0x00000000,
+    ld: 0x01000000,
+    st: 0x02000000,
+    add: 0x03000000,
+    sub: 0x04000000,
+    mul: 0x05000000,
+    div: 0x06000000,
+    lsh: 0x07000000,
+    rsh: 0x08000000,
+    cmp: 0x09000000,
+    je: 0x0A000000,
+    jne: 0x0B000000,
+    jl: 0x0C000000,
+    jle: 0x0D000000,
+    jg: 0x0E000000,
+    jge: 0x0F000000,
+    acch: 0x10000000,
+    accl: 0x11000000,
+    jmp: 0x12000000
+}
+
+comando = {
+    0x00: function(){
+        return
+    },
+    0x01: function(){
+        
+    },
+    0x02: function(){},
+    0x03: function(){},
+    0x04: function(){},
+    0x05: function(){},
+    0x06: function(){},
+    0x07: function(){},
+    0x08: function(){},
+    0x09: function(){},
+    0x0A: function(){},
+    0x0B: function(){},
+    0x0C: function(){},
+    0x0D: function(){},
+    0x0E: function(){},
+    0x0F: function(){},
+    0x10: function(){},
+    0x11: function(){},
+    0x12: function(){}
+}
 
 
 
