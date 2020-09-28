@@ -1,27 +1,31 @@
-var pc = 0x00000000;
-var ir = 0x00;
-var mar = 0x00000000;
-var mbr = 0x00000000;
-var acc = 0x00000000;
-var e = 0
-var l = 0
-var g = 0
+var pc;
+var ir;
+var mar;
+var mbr;
+var acc;
+var e
+var l
+var g
 var memoria = [];
 
-
+//iniciar a GUI com valores iniciais
+zerarProcessador()
 let table = document.querySelector("table");
 criarTabela(table);
 lerMemoria()
 
+//funcao para criar a tabela memoria
 function criarTabela(table){
     var i = 3, j =4;
     for(i = 0; i <10; i++){
+        //criando a linha
         let row = table.insertRow();
         let cb =  document.createElement("th"); 
-        var textnode = document.createTextNode(`${(i*10).toString(16).toUpperCase()}`);  
+        var textnode = document.createTextNode(`${(i*10).toString(16).toUpperCase()}`);
         cb.appendChild(textnode);
         cb.className = "celula";
         row.appendChild(cb);
+        //criando as celulas 
         for(j = 0; j<10; j++){
             let cell = row.insertCell();
             var input = document.createElement("input");
@@ -36,17 +40,19 @@ function criarTabela(table){
     }
 }
 
+//funcao que zera os valores no processador
 function zerarProcessador(){
-    pc = 0x00000000;
-    ir = 0x00;
-    mar = 0x00000000;
-    mbr = 0x00000000;
-    acc = 0x00000000;
+    pc = 0;
+    ir = 0;
+    mar = 0;
+    mbr = 0;
+    acc = 0;
     e = 0
     l = 0
     g = 0
 }
 
+//le a tabela memoria e armazena no vetor memoria
 function lerMemoria(){
     let temp = [];
     for(let i = 0; i < 10; i++){
@@ -59,6 +65,7 @@ function lerMemoria(){
     return temp;
 }
 
+//le o vetor memoria e atualiza a tabela memoria
 function atualizarMemoria(){
     for(let i =0; i < 10; i++){
         for (let j = 0; j < 10; j++) {
@@ -69,6 +76,7 @@ function atualizarMemoria(){
     }
 }
 
+//envia o programa para a memoria
 function carregarMemoria(){
     lerMemoria()
     zerarProcessador()
@@ -78,15 +86,18 @@ function carregarMemoria(){
     let contador = pc;
     linhas.forEach(linha => {
         if(linha != ""){
+            //converte as palavras que estao em string para int
             memoria[contador] = parseInt(linha, 16)
             contador++;
         }
     });
+    //atualizar o PC caso o usuario queira editar
     pc = parseInt(document.getElementById("ponteiro").value, 16);
     atualizarProcessador();
     atualizarMemoria();
 }
 
+//le a GUI do processador e armazena dentro das varaiveis
 function lerProcessador(){
     let temp = document.getElementById("pc").value;
     pc = parseInt(temp, 16);
@@ -107,6 +118,7 @@ function lerProcessador(){
 
 }
 
+//le as variaveis do processador e atualiza a GUI
 function atualizarProcessador(){
     let temp = formatarHexa(pc.toString(16), 8);
     document.getElementById("pc").value = temp;
@@ -126,6 +138,7 @@ function atualizarProcessador(){
     document.getElementById("g").value = temp;
 }
 
+//funcao para acrescentar bits a esquerda, para vizualicacao na GUI
 function formatarHexa(palavra, tamanho){
     while(palavra.length < tamanho){
         palavra = "0" + palavra;
@@ -133,6 +146,7 @@ function formatarHexa(palavra, tamanho){
     return palavra.toUpperCase();
 }
 
+//converte o as palavras para binario
 function converter(){
     let codigo = document.getElementById("codigomaquina").value;
     var linhas = codigo.split("\n");
@@ -141,74 +155,95 @@ function converter(){
         if(linha != ""){
             let temp = linha.split(" ");
             let opcode = temp[0];
-             if(temp.length == 2){
-                immediate = parseInt(temp[1], 16);
-             }else{
+            if(temp.length == 2){
+                //pega a string com os valores do immediate e converte para hexa
+            immediate = parseInt(temp[1], 16);
+            //caso o endereco passe de 6 bytes
+            immediate = immediate&0x00FFFFFF;
+            }else{
                 immediate = 0x00;
-             }
-            opcode = opCodeToHexa[opcode]
-            let palavra = (opcode + immediate).toString(16);
+            }
+            opcode = opCodeToHexa[opcode]<<24;
+            //monta a palavra de instrucao
+            let palavra = (opcode | immediate).toString(16);
             palavra = formatarHexa(palavra, 8);
+            //linhashexa eh uma string contendo todas as palavras, que serao
+            //convertidas para int para armazenar na memoria
             linhasHexa += palavra + "\n";
         }
     });
+    //atualiza a GUI do codigo traduzido
     document.getElementById("codigohexa").value = linhasHexa.toUpperCase();
 }
 
+//Ciclo do processador
 function executarCiclo(){
+    //Le os valores da GUI e guarda nas variaveis
     lerProcessador()
     lerMemoria()
 
-    buscar(pc)
-    pc++
-    decodificar()
-    executar()
+    //busca na memoria a instrucao
+    busca()
+    pc++ //incrementa o PC
+    decodifica() //decodifica a instrucao
+    executa() //executa a instrucao
     
+    //Atualiza a GUI
     atualizarProcessador()
     atualizarMemoria()
 }
 
+//realiza uma busca na memoria
 function buscar(endereco){
     mbr = memoria[endereco]
 }
 
-function decodificar(){
+function busca(){
+    //busca na memoria a instrucao contida no endereco PC
+    buscar(pc)
+}
+
+function decodifica(){
+    //pega a palavra contida no mbr
     let palavra = mbr
     let mascara = 0x00FFFFFF
-
+    //armazena o opcode no ir
     ir = palavra>>24
+    //armazena o endereco no mar
     mar = palavra&mascara
 
 }
 
-function executar(){
+function executa(){
+    //executa o comando com o devido opcode
     comando[ir]()
 }
 
 
-
+//um objeto para relacionar o comando com o valor em hexadecimal
 opCodeToHexa = {
-    hlt: 0x00000000,
-    ld: 0x01000000,
-    st: 0x02000000,
-    add: 0x03000000,
-    sub: 0x04000000,
-    mul: 0x05000000,
-    div: 0x06000000,
-    lsh: 0x07000000,
-    rsh: 0x08000000,
-    cmp: 0x09000000,
-    je: 0x0A000000,
-    jne: 0x0B000000,
-    jl: 0x0C000000,
-    jle: 0x0D000000,
-    jg: 0x0E000000,
-    jge: 0x0F000000,
-    acch: 0x10000000,
-    accl: 0x11000000,
-    jmp: 0x12000000
+    hlt: 0x00,
+    ld: 0x01,
+    st: 0x02,
+    add: 0x03,
+    sub: 0x04,
+    mul: 0x05,
+    div: 0x06,
+    lsh: 0x07,
+    rsh: 0x08,
+    cmp: 0x09,
+    je: 0x0A,
+    jne: 0x0B,
+    jl: 0x0C,
+    jle: 0x0D,
+    jg: 0x0E,
+    jge: 0x0F,
+    acch: 0x10,
+    accl: 0x11,
+    jmp: 0x12
 }
 
+//um objeto para relacionar o opcode com a instrucao
 comando = {
     0x00: function(){       //hlt
         return
@@ -284,50 +319,3 @@ comando = {
         pc = mbr
     }     
 }
-
-
-
-function opCodeToHexa(opcode) {
-    let retorno = 0x00000000;
-    if (opcode == "hlt")
-        retorno = 0x00000000;
-    else if (opcode == "ld")
-        retorno = 0x01000000;
-    else if (opcode == "st")
-        retorno = 0x02000000;
-    else if (opcode == "add")
-        retorno = 0x03000000;
-    else if (opcode == "sub")
-        retorno = 0x04000000;
-    else if (opcode == "mul")
-        retorno = 0x05000000;
-    else if (opcode == "div")
-        retorno = 0x06000000;
-    else if (opcode == "lsh")
-        retorno = 0x07000000;
-    else if (opcode == "rsh")
-        retorno = 0x08000000;
-    else if (opcode == "cmp")
-        retorno = 0x09000000;
-    else if (opcode == "je")
-        retorno = 0x0A000000;
-    else if (opcode == "jne")
-        retorno = 0x0B000000;
-    else if (opcode == "jl")
-        retorno = 0x0C000000;
-    else if (opcode == "jle")
-        retorno = 0x0D000000;
-    else if (opcode == "jg")
-        retorno = 0x0E000000;
-    else if (opcode == "jge")
-        retorno = 0x0F000000;
-    else if (opcode == "acch")
-        retorno = 0x10000000;
-    else if (opcode == "accl")
-        retorno = 0x11000000;
-    else if (opcode == "jmp")
-        retorno = 0x12000000;
-
-    return retorno;
-}
-
