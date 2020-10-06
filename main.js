@@ -149,20 +149,18 @@ function formatarHexa(palavra, tamanho){
 //converte o as palavras para binario
 function converter(){
     let codigo = document.getElementById("codigomaquina").value;
-    var linhas = codigo.split("\n");
-    var linhasHexa = "";
+    let linhas = codigo.split("\n");
+    let linhasHexa = "";
     linhas.forEach(linha => {
         if(linha != ""){
             let temp = linha.split(" ");
             let opcode = temp[0];
-            if(temp.length == 2){
-                //pega a string com os valores do immediate e converte para hexa
+
+            //pega a string com os valores do immediate e converte para hexa
             immediate = parseInt(temp[1], 16);
             //caso o endereco passe de 6 bytes
             immediate = immediate&0x00FFFFFF;
-            }else{
-                immediate = 0x00;
-            }
+
             opcode = opCodeToHexa[opcode]<<24;
             //monta a palavra de instrucao
             let palavra = (opcode | immediate).toString(16);
