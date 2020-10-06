@@ -312,8 +312,17 @@ comando = {
         if(e == 1 || g == 1)
             pc = mar
     },
-    0x10: function(){},     //acch
-    0x11: function(){},     //accl
+    0x10: function(){       //acch
+        let temp = mar&0x0000FFFF;
+        temp = temp<<16;
+        acc = acc&0x0000FFFF;
+        acc = acc|temp;
+    },
+    0x11: function(){       //accl
+        let temp = mar&0x0000FFFF;
+        acc = acc&0xFFFF0000;
+        acc = acc|temp;
+    },     
     0x12: function(){       //jmp
         buscar(mar)
         pc = mbr

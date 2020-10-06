@@ -16,7 +16,7 @@ html{
     position: relative;
     top: 80px;
     left: 80px;
-    justify-content: space-between;
+    
 }
 
 #divnext{
@@ -57,13 +57,13 @@ input.uc, input.ul{
 }
 
 #metade2{
-    top: 78px;
+    top: 25px;
 }
 
 
-#metade1{
+/* #metade1{
     top: 15px;
-}
+} */
 
 #instrucao{
     display: grid;
