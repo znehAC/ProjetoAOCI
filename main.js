@@ -244,7 +244,8 @@ opCodeToHexa = {
 //um objeto para relacionar o opcode com a instrucao
 comando = {
     0x00: function(){       //hlt
-        return
+        pc--;               //decremento o pc pois ele eh aumentado apos o estagio da busca
+        return;
     },  
     0x01: function(){       //ld
         buscar(mar) 
