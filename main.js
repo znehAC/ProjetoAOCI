@@ -13,6 +13,7 @@ zerarProcessador()
 let table = document.querySelector("table");
 criarTabela(table);
 lerMemoria()
+atualizarMemoria()
 
 //funcao para criar a tabela memoria
 function criarTabela(table){
@@ -34,11 +35,23 @@ function criarTabela(table){
             input.id = `casa${j+(i*10)}`
             input.value = `00000000`;
             input.size = 2;
+            input.addEventListener("focusout", (e) => {
+                lerMemoria()
+                atualizarMemoria()
+            })
+            input.addEventListener("keydown", function(event) {
+                if (event.code === "Enter") {
+                    console.log("apertei enter")
+                    lerMemoria()
+                    atualizarMemoria()
+                }
+            }); 
             cell.className = "celula";
             cell.appendChild(input);
         }
     }
 }
+
 
 //funcao que zera os valores no processador
 function zerarProcessador(){
@@ -139,11 +152,12 @@ function atualizarProcessador(){
 }
 
 //funcao para acrescentar bits a esquerda, para vizualicacao na GUI
-function formatarHexa(palavra, tamanho){
+function formatarHexa(palavra, tamanho){ 
     while(palavra.length < tamanho){
         palavra = "0" + palavra;
     }
-    return palavra.toUpperCase();
+    palavra = palavra.toUpperCase();
+    return "0x" + palavra; 
 }
 
 //converte o as palavras para binario

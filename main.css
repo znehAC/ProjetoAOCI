@@ -126,14 +126,14 @@ input.uc, input.ul{
 }
 
 .celula{
-    width: 63px; 
+    width: 78px; 
 }
 
 .casa{
     height: 100%;
     font-size: medium;
     margin: 2px auto; 
-    width: 72px;
+    width: 87px;
     background: lightgray; 
     border: 0px solid black; 
     /* border-radius: 2px; */
